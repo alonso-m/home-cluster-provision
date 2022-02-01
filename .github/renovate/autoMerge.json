@@ -1,0 +1,37 @@
+{
+    "packageRules": [
+      {
+        "matchDatasources": [
+          "helm"
+        ],
+        "automerge": true,
+        "automergeType": "branch",
+        "requiredStatusChecks": null,
+        "matchUpdateTypes": [
+          "minor",
+          "patch"
+        ],
+        "matchPackageNames": [
+          "kube-prometheus-stack",
+          "grafana",
+          "thanos",
+          "loki",
+          "promtail"
+        ]
+      },
+      {
+        "matchManagers": ["github-actions"],
+        "automerge": true,
+        "automergeType": "branch",
+        "requiredStatusChecks": null,
+        "matchUpdateTypes": ["minor", "patch"]
+      },
+      {
+        "matchManagers": ["pre-commit"],
+        "automerge": true,
+        "automergeType": "branch",
+        "requiredStatusChecks": null,
+        "matchUpdateTypes": ["minor", "patch"]
+      }
+    ]
+  }

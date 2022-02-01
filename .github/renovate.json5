@@ -1,0 +1,98 @@
+{
+  "extends": [
+    ":enableRenovate",
+    "config:base",
+    ":disableRateLimiting",
+    ":dependencyDashboard",
+    ":semanticCommits",
+    ":separatePatchReleases",
+    "docker:enableMajor",
+    ":enablePreCommit",
+    "github>alonso-m/home-cluster//.github/renovate/autoMerge",
+    "github>alonso-m/home-cluster//.github/renovate/labels"
+  ],
+  "platform": "github",
+  "username": "alonso-m-bot[bot]",
+  "repositories": ["alonso-m/home-cluster"],
+  "onboarding": false,
+  "requireConfig": false,
+  "gitAuthor": "alonso-m-bot <98149217+alonso-m[bot]@users.noreply.github.com>",
+  "timezone": "Europe/Amsterdam",
+  "dependencyDashboardTitle": "Renovate Dashboard 🤖",
+  "suppressNotifications": [
+    "prIgnoreNotification"
+  ],
+  "rebaseWhen": "conflicted",
+  // set up renovate managers
+  "helmv3": {
+    "fileMatch": [
+      "charts/.+/Chart\\.yaml$"
+      ]
+  },
+  "flux": {
+    "fileMatch": [
+      "clusters/.+\\.yaml$"
+   ]
+  },
+  "helm-values": {
+    "fileMatch": [
+      "clusters/.+/helm-release\\.yaml$"
+    ]
+  },
+  "kubernetes": {
+    "fileMatch": [
+      "clusters/.+\\.yaml$"
+    ],
+    "ignorePaths": [
+      "clusters/home/flux-system/",
+      "clusters/pueblo/flux-system/"
+    ]
+  },
+  "regexManagers": [
+    // regexManager to read and process GitHub release artifacts
+    {
+      "fileMatch": [
+        "clusters/.+\\.yaml$"
+      ],
+      "matchStrings": [
+        "https:\/\/github.com\/(?<org>.*=?)\/(?<repo>.*=?)\/releases\/download\/(?<currentValue>.*=?)\/.*"
+      ],
+      "datasourceTemplate": "github-releases",
+      "depNameTemplate": "{{org}}/{{repo}}"
+    },
+    // Generic Regex Manager
+    {
+      "fileMatch": [
+        "clusters/.+\\.yaml$"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>.*?) depName=(?<depName>.*?)( registryUrl=(?<registryUrl>.*?))?( versioning=(?<versioning>.*=?))?\n .*: (?<currentValue>.*=?)"
+      ],
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}semver{{/if}}",
+      "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{else}}{{/if}}"
+    },
+    // Generic Docker image Regex manager
+    {
+      "fileMatch": [
+        "clusters/.+\\.yaml$"
+      ],
+      "matchStrings": [
+        "# renovate: docker-image( registryUrl=(?<registryUrl>.*?))?( versioning=(?<versioning>.*=?))?\n .*: (?<depName>.*?):(?<currentValue>.*=?)"
+      ],
+      "datasourceTemplate": "docker",
+      "versioningTemplate": "{{#if versioning}}{{{versioning}}}{{else}}docker{{/if}}",
+      "registryUrlTemplate": "{{#if registryUrl}}{{{registryUrl}}}{{else}}{{/if}}"
+    }
+  ],
+  "packageRules": [
+    // setup datasources
+    {
+      "matchDatasources": ["helm"],
+      "ignoreDeprecated": true
+    },
+    {
+      "matchDatasources": ["docker"],
+      "commitMessageExtra": "to {{newVersion}}",
+    }
+  ]
+}
