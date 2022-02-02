@@ -23,31 +23,6 @@
     "prIgnoreNotification"
   ],
   "rebaseWhen": "conflicted",
-  // set up renovate managers
-  "helmv3": {
-    "fileMatch": [
-      "charts/.+/Chart\\.yaml$"
-      ]
-  },
-  "flux": {
-    "fileMatch": [
-      "clusters/.+\\.yaml$"
-   ]
-  },
-  "helm-values": {
-    "fileMatch": [
-      "clusters/.+/helm-release\\.yaml$"
-    ]
-  },
-  "kubernetes": {
-    "fileMatch": [
-      "clusters/.+\\.yaml$"
-    ],
-    "ignorePaths": [
-      "clusters/home/flux-system/",
-      "clusters/pueblo/flux-system/"
-    ]
-  },
   "regexManagers": [
     // regexManager to read and process GitHub release artifacts
     {
@@ -86,10 +61,6 @@
   ],
   "packageRules": [
     // setup datasources
-    {
-      "matchDatasources": ["helm"],
-      "ignoreDeprecated": true
-    },
     {
       "matchDatasources": ["docker"],
       "commitMessageExtra": "to {{newVersion}}",
